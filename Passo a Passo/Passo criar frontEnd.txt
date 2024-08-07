@@ -1,0 +1,190 @@
+Primeiro devemos criar o ambiente virtual:
+
+# Criar
+	# Linux
+		python3 -m venv venv
+	# Windows
+		python -m venv venv
+
+Após a criação do venv vamos ativa-lo
+
+#Ativar
+	# Linux
+		source venv/bin/activate
+	# Windows
+		venv\Scripts\Activate
+
+# Caso algum comando retorne um erro de permissão execute o código e tente novamente:
+
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+
+
+Agora vamos fazer a instalação do Django e as demais bibliotecas:
+
+pip install django
+pip install pillow
+
+Vamos criar o nosso projeto Django: o ponto é para ser no diretorio atual
+django-admin startproject core .
+
+Rode o servidor para testar:
+python manage.py runserver
+
+##########################################################################################
+Explicação dos arquivos 
+manage.py é o gerenciavel do projeto é onde eu incio 
+dentro do diretorio core
+
+settings.py = onde fica essas configurações
+urls.py = vai definir quais são as rotas
+
+asgi.py e wsgi.py é para fazer o deploy da aplicação 
+##########################################################################################
+
+## Conceitos 
+Server e Client 
+Client encaminha uma  REQUEST para o server "Quero acessar seu site"
+Server responde uma RESPONSE para o client "voce pode acessar o seguinte"
+
+### Para cada parte do proto, Login, cadastro, oque vai acessar 
+é criado um app para cada para organizar 
+
+
+##########################################################################################
+Criar um app para usuario:
+python manage.py startapp usuarios
+
+Como isso cria um direto usuarios, com seguintes arquivos:
+models.py usado para tudo relacionado a banco de dados 
+views.py são as logica onde fica as funções
+template são os arquivos HTML
+
+##########################################################################################
+Tem que vincular o app usuarios ao settings do projeto principal 
+core/settings.py
+    # Application definition
+
+    INSTALLED_APPS
+    cria uma nova linha e coloca 'usuarios'
+
+##########################################################################################
+Cria uma URL cadastros
+core/urls.py
+    cria a linha 
+        path('usuarios/', ) #depois da virgula coloca oq vai ser feito 
+        então eu vou chamar a funcao include para incluir um app dentro da URL 
+        from django.urls import path, include
+        path('usuarios/', include('usuarios.urls')),
+    dentro do diretorio usuarios tem que criar o arquivo 
+    urls.py ## e dentro desse arquivo cria as urls de usuarios
+    pq na urls quero que fique 
+    http://127.0.0.1:8000/urls.py/usuarios/cadastros 
+    http://127.0.0.1:8000/urls.py/usuarios/logar 
+
+        from django.urls import path    ## para chamar as urls
+        from . import views             ## para chamar o view do diretorio atual
+
+        urlpatterns = [
+            path('cadastro/', views.cadastro, name="cadastros")  ##quando acessar o Cadastro ele vai chamar a função cadastro dentro do view
+        ]
+
+##########################################################################################
+\usuarios\urls.py
+
+from django.urls import path            # padrao do djando
+from . import views                     # import do diretorio atual o views
+
+urlpatterns = [
+    path('cadastro/', views.cadastro, name="cadastros")     # ao acessar o :8000/usuarios/cadastro/
+]                                                           # vai chamar dentro do views a função cadastro 
+                                                            # vai dar o nome de cadastros
+
+##########################################################################################
+\usuarios\views.py
+
+from django.shortcuts import render     ##padrao do django
+from django.http import HttpResponse    ##para chamar um funcao de response
+
+# Create your views here.
+def cadastro(request):                  #vai a funcao cadastro com um request
+    return HttpResponse('Ola mundo')    # aplicação retorna um response com 'ola mundo'
+
+##########################################################################################
+\core\settings.py
+
+import os                           # serve para concatenar diretorios 
+                                    # para não precisar usar BASE_DIR + '/templtes' 
+TEMPLATES = 
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],   #os vai verificar qual SistOpera e vai usar as base correta
+                                                         # então ele vai procurar no diretorio atual a pasta templates
+        'APP_DIRS': True,                               # SERVE para procurar a pasta templates dentro do apps
+
+##########################################################################################
+Crio o pasta cadastro dentro do diretorio usuario
+e dentro dele crio cadastro.html
+\usuarios\templates\cadastro.html
+
+##########################################################################################
+Para não precisar repetir HTML, cria um arquivo base
+na raiz do projeto cria 
+\templates\base.html
+
+##########################################################################################
+no \usuarios\templates\cadastro.html
+cria o  para chamar o arquivo base
+
+{% extends "base.html" %}   <!-- chama o arquivo base.html -->
+
+{% block 'body'%}           <!--Cria um block que vai utilizar o body-->
+
+<h1>Olá mundo </h1>
+
+{% endblock %}               <!--finaliza o bloco -->
+
+##########################################################################################
+Para realizar a configuração dos arquivos static
+\core\settings.py
+3 linhas é arquivos static o Dev que coloca para aparecer
+2 ultimas são arquivos de media onde o usuario faz o upload
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'templates/static'),)
+    STATIC_ROOT = os.path.join('static')
+
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
+
+##########################################################################################
+Para organização 
+\templates\static
+    cria uma pasta para cada app
+    PSW-django\templates\static\geral\css
+    PSW-django\templates\static\geral\css\base.css
+    PSW-django\templates\static\geral\img
+
+    PSW-django\templates\static\usuarios\css
+    PSW-django\templates\static\usuarios\img
+
+no PSW-django\templates\base.html
+para chamar o CSS do arquivo base
+{% load static %}
+link rel="stylesheet" href="{% static 'geral/css/base.css' %}">
+##########################################################################################
+cria o PSW-django\templates\static\usuarios\css\usuarios.css
+
+e edita o 
+PSW-django\usuarios\templates\cadastro.html
+
+    {% block 'head' %}
+    <link rel="stylesheet" href="{% static 'usuarios/css/usuarios.css' %}">
+    {% endblock 'head' %}
+
+##########################################################################################
+Adiciona img
+PSW-django\templates\static\usuarios\img\bg.png
+
+edita o 
+PSW-django\templates\static\usuarios\css\usuarios.css
+.bg-img{
+    background-image: url('/static/usuarios/img/bg.png');
+
+    

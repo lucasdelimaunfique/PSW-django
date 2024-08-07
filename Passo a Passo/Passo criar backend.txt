@@ -1,0 +1,70 @@
+Cadastros usar a tabela de usuarios do django
+
+python manage.py makemigrations
+python manage.py migrate
+
+extensão SQLite Viewer
+
+###############################################
+PSW-django\usuarios\templates\cadastro.html
+alterar 
+
+<form action="{% url 'cadastro' %}" >
+                    <label>Username</label>
+
+para pegar o arquivo 
+PSW-django\usuarios\urls.py                  
+###############################################
+method = GET quando a solicitação vem do navegador 
+method = POST quando vem do codigo 
+
+csrf_token é para segurança evitar falsificação
+<form action="{% url 'cadastro' %}" method="POST">{%{% csrf_token %}%}
+
+###############################################
+PSW-django\usuarios\views.py
+def cadastro(request):
+    if request.method == "GET":                     ## Se for GEt fica na pagina
+        return render(request, 'cadastro.html')
+    elif request.method == "POST":                  ## Se for POST retona teste
+        return HttpResponse("TESTE")
+
+
+###############################################
+Para import class do banco do django
+
+from django.contrib.auth.models import User
+
+###############################################
+Mensages de erro
+https://getbootstrap.com/docs/5.0/components/alerts/
+
+editar o 
+PSW-django\core\settings.py
+
+## Messages 
+from django.contrib.messages import constants
+
+MESSAGE_TAGS = {
+    constants.DEBUG: 'alert-primary',
+    constants.ERROR: 'alert-danger',
+    constants.SUCCESS: 'alert-success',
+    constants.INFO: 'alert-info',
+    constants.WARNING: 'alert-warning',
+}
+
+##############################################################################################
+PSW-django\usuarios\views.py
+
+django.contrib.messages import constants
+from django.contrib import messages         #para import do PSW-django\core\settings.py
+##############################################################################################
+Para aparecer o alert no HTML 
+PSW-django\usuarios\templates\cadastro.html
+
+{% if messages %}
+    {% for message in messages%}
+        <!--tag é a tag da message no settig e message é  message do views.py-->
+        {{message.tags}} - {{message}}        <!--duas chaves é para dar o print-->
+    {%endfor%}
+{% endif%}
