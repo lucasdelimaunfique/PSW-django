@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.messages import constants
-from django.contrib import messages
+from django.contrib import messages, auth
 
 # Create your views here.
 def cadastro(request):
@@ -42,3 +42,20 @@ def cadastro(request):
         
         return redirect('/usuarios/logar')
         #return HttpResponse(f'{username},{senha},{confirmar_senha}')
+
+def logar (request):
+    if request.method == "GET":
+        return render (request, 'logar.html')
+    elif request.method == "POST":
+        username = request.POST.get('username')
+        senha = request.POST.get('senha')
+
+        # para solicitar se tem o userneme e senha no banco de dados
+        user = auth.authenticate(request, username=username, password=senha)
+        if user:
+            # vai fazer o login
+            auth.login(request, user)
+            return redirect('/empresarios/cadastrar_empresa')
+        messages.add_message(request, constants.ERROR, 'Usuario ou senha invalidos')
+        return redirect ('/usuarios/logar')
+        

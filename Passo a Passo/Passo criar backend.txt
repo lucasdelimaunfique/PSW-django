@@ -68,3 +68,119 @@ PSW-django\usuarios\templates\cadastro.html
         {{message.tags}} - {{message}}        <!--duas chaves é para dar o print-->
     {%endfor%}
 {% endif%}
+
+##############################################################################################
+PSW-django\usuarios\views.py
+Crio o def do logar
+
+def logar (request):
+    if request.method == "GET":
+        return render (request, 'logar.html')
+    elif request.method == "POST":
+        username = request.POST.get('username')
+        senha = request.POST.get('senha')
+
+Agr preciso validar no Banco de dados 
+
+utilizo a biblioteca 
+from django.contrib import auth
+
+utiliza uma função do django o uth.authenticate
+que vai encaminhar para o banco o username e senha 
+
+##############################################################################################
+        user = auth.authenticate(request, username=username, password=senha)
+        if user:
+            auth.login(request, user)
+authenticate só busca o usuario no banco
+login que vai utilizar para logar 
+
+##############################################################################################
+Cria para novo APP 
+python manage.py startapp empresarios
+
+em PSW-django\core\settings.py
+
+INSTALLED_APPS = 
+adiciona empresarios
+##############################################################################################
+Criar tabelas no banco 
+PSW-django\empresarios\models.py
+
+models serve para entender que um class de banco de dados 
+class Empresa (models.Model): 
+
+class Empresa (models.Model): 
+    nome = models.CharField(max_length=50)
+    cnpj = models.CharField(max_length=50)
+    site = models.URLField(max_length=50)
+    data_final_cap = models.DateField()
+
+##############################################################################################
+PSW-django\empresarios\models.py
+pitch = models.FileField(upload_to='pitchs')    #é para fazer o upload de midia
+
+no PSW-django\core\settings.py
+ja foi definido 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+que todas as media será envia para pasta media no diretorio atual
+se não tiver criado o django cria 
+então ele vai mandar para pasta pitchs dentro da media no diretorio atual 
+##############################################################################################
+PSW-django\empresarios\models.py
+from django.contrib.auth.models import User
+
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+
+ForeignKey serve para relacionar u usuario como acesso da empresa
+
+##############################################################################################
+para criar os arquivos no python
+python manage.py makemigrations
+
+para criar as tabelas no banco
+python manage.py migrate
+
+
+##############################################################################################
+Por padrão o django cria uma tela de admin
+http://127.0.0.1:8000/admin
+
+criar usuariosuper
+python manage.py createsuperuser
+lucas
+123456789
+
+##############################################################################################
+quero que a tabela empresa apareça no superadmin
+PSW-django\empresarios\admin.py
+
+from .models import Empresas
+
+admin.site.register(Empresas)
+
+##############################################################################################
+Para passar parametros do banckende para o frontend 
+
+PSW-django\empresarios\views.py
+from .models import Empresas
+
+vai busar no models o Empresas e renderizar no html
+def cadastrar_empresa(request):
+    if request.method == "GET":
+        return render(request, 'cadastrar_empresa.html', {'tempo_existencia':Empresas.tempo_existencia_choices})
+
+PSW-django\empresarios\templates\cadastrar_empresa.html
+
+<select name="tempo_existencia" class="form-select">
+    {% for te in tempo_existencia %}
+        <option value="{{te.0}}">{{te.1}}</option>
+    {% endfor %}
+</select>
+##############################################################################################
+Bloquear para quem não tem usuario
+
+
+##############################################################################################
+
+Fazer verificações no PSW-django\empresarios\views.py

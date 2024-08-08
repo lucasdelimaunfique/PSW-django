@@ -187,4 +187,21 @@ PSW-django\templates\static\usuarios\css\usuarios.css
 .bg-img{
     background-image: url('/static/usuarios/img/bg.png');
 
-    
+
+##########################################################################################
+PSW-django\usuarios\templates\logar.html
+adiciona 
+<a href="{%url 'cadastro'%}" class="texto">Não possuo uma conta</a>
+e na cadastro coloca o logar 
+
+##########################################################################################
+Colocar barra de navegação só em alguns html
+
+cria o PSW-django\templates\partials\barra_navegacao.html
+
+no HTML que deseja que aparece adiciona 
+PSW-django\empresarios\templates\cadastrar_empresa.html
+
+    {% include "partials/barra_navegacao.html" %}
+
+##########################################################################################
