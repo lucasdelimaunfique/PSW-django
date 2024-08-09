@@ -184,3 +184,57 @@ Bloquear para quem não tem usuario
 ##############################################################################################
 
 Fazer verificações no PSW-django\empresarios\views.py
+
+## para validar se está logado
+if not request.user.is_authenticated:
+    return redirect('/usuarios/logar')
+
+
+if request.method == "GET":
+    # para buscar na BD e só trazer a empresa do usuario logado
+    empresas = Empresas.objects.filter(user=request.user)
+    return render(request, 'listar_empresas.html')
+##########################################################################################
+Criar URL dinamica - coloca parametros dentro da URL
+PSW-django\empresarios\urls.py
+path('empresa/<int:id>', views.empresa, name="empresa")
+
+e no PSW-django\empresarios\views.py
+chama  def empresa(request, id):
+
+no PSW-django\empresarios\templates\listar_empresas.html
+chama o href
+td class="linha"><a href="/empresarios/empresa/{{empresa.id}}
+
+fazer de uma forma melhor 
+href="{% url 'empresa' empresa.id %}" 
+##########################################################################################
+Para upar documento 
+PSW-django\empresarios\models.py
+
+class Documento(models.Model):
+    empresa = models.ForeignKey(Empresas, on_delete=models.DO_NOTHING)
+    titulo = models.CharField(max_length=30)
+    arquivo = models.FileField(upload_to="documentos")
+    
+    def __str__(self):
+        return self.titulo
+
+Para novo model seja criado tem que dar o comando 
+
+python manage.py makemigrations
+python manage.py migrate
+
+PSW-django\empresarios\admin.py
+admin.site.register(Documento)
+
+##########################################################################################
+Para mostar o documento
+PSW-django\empresarios\views.py
+    if request.method == "GET":
+     # para lisar os documentos
+     documentos = Documento.objects.filter(empresa=empresa)
+     return render(request, 'empresa.html', {'empresa': empresa, 'documentos': documentos})
+
+ PSW-django\empresarios\templates\empresa.html    
+

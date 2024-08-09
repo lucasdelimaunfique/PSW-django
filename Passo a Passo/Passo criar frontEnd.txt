@@ -205,3 +205,66 @@ PSW-django\empresarios\templates\cadastrar_empresa.html
     {% include "partials/barra_navegacao.html" %}
 
 ##########################################################################################
+PSW-django\empresarios\templates\listar_empresas.html
+
+{% for empresa in empresas %}
+    <tr class="linha">
+        <td class="linha">{{empresa.nome}}</td>
+        <td class="linha">
+            <div class="progress">
+                <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </td>
+        <td class="linha">{{empresa.status}}</td>
+        <td class="linha"><a href="#" class="btn btn-indigo-normal">Abrir</a></td>
+    </tr>
+{%  endfor %}
+
+{% for empresa in empresas %}   # para trazer a empresa dentro da empresas
+
+{{empresa.nome}} serve para fazer o print 
+
+<td class="linha">{{empresa.status}}</td> para trazer o status, mas não tem uma tabela status 
+cria uma class 'fake'
+
+PSW-django\empresarios\models.py
+
+from datetime import date
+
+@property #Quero que a função se comporte como uma propriedade 
+def status(self):
+    if date.today() > self.data_final_captacao:
+        return 'Captação Finalizada'
+    return 'Em captação'
+
+##########################################################################################
+para mudar o texto pode usar o badges bootstrap
+https://getbootstrap.com/docs/5.3/components/badge/
+Background colors 
+
+PSW-django\empresarios\models.py
+    @property #Quero que a função se comporte como uma propriedade 
+    def status(self):
+        if date.today() > self.data_final_captacao: #data atual menor que data final
+            return '<span class="badge text-bg-success">Finalizado</span>'
+        return '<span class="badge text-bg-warning">Em processo</span>'
+
+mas ele vai aparece na pagina como está no return devido a segurança, então tem que fazer
+from django.utils.safestring import mark_safe
+
+chama o mark_safe no return
+
+return mark_safe('<span class="badge text-bg-success">Finalizado</span>')
+return mark_safe('<span class="badge text-bg-warning">Em processo</span>')
+##########################################################################################
+Para fazer aparecer o logo da empresa 
+
+PSW-django\core\urls.py
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+] + static(settings.MEDIA_URL, documento_root=settings.MEDIA_ROOT)
+
+PSW-django\empresarios\templates\empresa.html
+<img src="{{empresa.logo.url}}" class="foto-empresa" alt="">

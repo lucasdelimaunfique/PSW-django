@@ -55,6 +55,7 @@ def logar (request):
         if user:
             # vai fazer o login
             auth.login(request, user)
+            print (user,'logado')
             return redirect('/empresarios/cadastrar_empresa')
         messages.add_message(request, constants.ERROR, 'Usuario ou senha invalidos')
         return redirect ('/usuarios/logar')
