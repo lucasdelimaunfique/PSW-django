@@ -238,3 +238,42 @@ PSW-django\empresarios\views.py
 
  PSW-django\empresarios\templates\empresa.html    
 
+##########################################################################################
+Criar o app investidores
+
+python manage.py startapp investidores
+
+Trazer campos dinamicamento no HTML do models 
+PSW-django\investidores\views.py
+
+def sugestao(request):
+    areas = Empresas.area_choices
+    if request.method == 'GET':
+        return render(request, 'sugestao.html', {'areas':areas})
+
+PSW-django\investidores\templates\sugestao.html
+<select name="area" id="" class="form-select" multiple>
+    {% for area in areas %}
+        <option value="{{area.0}}">{{area.1}}</option>
+    {% endfor %}
+</select>
+##########################################################################################
+para retorar lista no GET tem que ser se deixar só GET retorna só un 
+area = request.POST.getlist('area')
+
+PSW-django\investidores\views.py
+
+        ##logica para trazer os dados conforme as opções de tipo 
+        if tipo == 'C':
+            empresas = Empresas.objects.filter(tempo_existencia='+5').filter(estagio="E")
+        elif tipo == 'D':
+            ## filter para uma lista  com tempo de existencia e ignorar o estagio E
+            empresas = Empresas.objects.filter(tempo_existencia__in=['-6', '+6', '+1']).exclude(estagio="E")
+        
+        empresas = empresas.filter(area__in=area)
+        
+        empresas_selecionadas = []
+        for empresa in empresas:
+            percentual = (float(valor) * 100) / float(empresa.valuation)
+
+            print(empresa.nome, percentual)
