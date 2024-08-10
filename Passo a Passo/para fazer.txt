@@ -1,3 +1,16 @@
 http://127.0.0.1:8000/empresarios/listar_empresas/
 
 colocar para funcionar o filtro de empresa
+
+########################################################
+http://127.0.0.1:8000/investidores/ver_empresa/6
+PSW-django\investidores\views.py
+
+trazer o campo de Indicadores dicanmicamente 
+
+########################################################
+colocar um tipo generico line 16
+ ##logica para trazer os dados conforme as opções de tipo 
+ PSW-django\investidores\views.py
+ 
+ ########################################################

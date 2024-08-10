@@ -1,7 +1,10 @@
-from django.shortcuts import render
-from empresarios.models import Empresas
+from django.shortcuts import render, redirect
+from empresarios.models import Empresas,Documento
 
 def sugestao(request):
+        ## para validar se está logado
+    if not request.user.is_authenticated:
+        return redirect('/usuarios/logar')
     areas = Empresas.area_choices
     if request.method == 'GET':
         return render(request, 'sugestao.html', {'areas':areas})
@@ -26,3 +29,9 @@ def sugestao(request):
                 empresas_selecionadas.append(empresa)
 
         return render(request, 'sugestao.html', {'empresas': empresas_selecionadas, 'areas': areas})
+
+
+def ver_empresa(request, id):
+    empresa = Empresas.objects.get(id=id)
+    documentos = Documento.objects.filter(empresa=empresa)
+    return render(request, 'ver_empresa.html', {'empresa': empresa, 'documentos': documentos})

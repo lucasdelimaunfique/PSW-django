@@ -268,3 +268,17 @@ from django.conf.urls.static import static
 
 PSW-django\empresarios\templates\empresa.html
 <img src="{{empresa.logo.url}}" class="foto-empresa" alt="">
+
+##########################################################################################
+PSW-django\investidores\templates\ver_empresa.html
+para não fazer 
+if empresa.area == 'ft' Fintech
+pode ser feito 
+
+<div class="col-md">
+    <h3>{{empresa.nome}}</h3>
+    <span class="badge bg-primary">{{empresa.get_area_display}}</span>
+</div>
+
+##########################################################################################
+icones para aplicação, pesquisar por icon svg 
