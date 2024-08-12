@@ -28,7 +28,7 @@ Vamos criar o nosso projeto Django: o ponto é para ser no diretorio atual
 django-admin startproject core .
 
 Rode o servidor para testar:
-python manage.py runserver
+\||
 
 ##########################################################################################
 Explicação dos arquivos 
