@@ -1,0 +1,33 @@
+Criar permissões
+api-sippulse\funcoes\models.py
+    class Funcao(models.Model):
+    # Exemplo de um modelo no seu app
+    nome = models.CharField(max_length=100)
+
+    class Meta:
+        permissions = [
+            ("can_access_calls", "Pode acessar calls"),
+            ("can_access_address", "Pode acessar address"),
+            ("can_access_user_location", "Pode acessar UserLocation"),
+            ("can_access_list_user_locations", "Pode acessar listUserLocations"),
+            ("can_access_result", "Pode acessar result"),
+            ("can_access_download_data", "Pode acessar download_data"),
+        ]
+
+Acessa o  http://127.0.0.1:8000/admin/
+cria o grupo Funções
+
+atribui permission_required a cada rota 
+from django.contrib.auth.decorators import permission_required
+@permission_required('funcoes.can_access_calls', raise_exception=True)
+
+python manage.py makemigrations
+python manage.py migrate
+
+##########################################################################################
+para testar 
+python manage.py shell
+
+from django.contrib.auth.models import User
+user = User.objects.get(username='seu_usuario')  # Substitua pelo nome de usuário do seu teste
+print(user.get_all_permissions())  # Verifica todas as permissões do usuário
