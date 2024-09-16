@@ -23,6 +23,24 @@ from django.contrib.auth.decorators import permission_required
 
 python manage.py makemigrations
 python manage.py migrate
+##########################################################################################
+Para ocultar no HTML
+api-sippulse\acess\templates\index.html
+{% if can_access_files_umg %}
+    <a href="{% url 'files_umg' %}" class="btn bg-danger text-light">Arquivos DDR</a>
+    <br><br>
+{% endif %}
+
+api-sippulse\acess\views.py
+def index(request):
+    if not request.user.is_authenticated:
+        return redirect('/acess/login')
+
+    # Verifique a permissão e passe para o template
+    context = {
+        'can_access_files_umg': request.user.has_perm('contenttypes.can_access_files_umg')
+    }
+    return render(request, 'index.html', context)
 
 ##########################################################################################
 para testar 
