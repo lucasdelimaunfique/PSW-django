@@ -1,6 +1,10 @@
 no app
 #######################################################################################################################################
 models.py
+
+from django.db import models
+from django.contrib.auth.models import User
+
 ## Classe para o app
 class Ativacao(models.Model):
     # Exemplo de um modelo no seu app
