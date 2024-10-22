@@ -47,3 +47,16 @@ LogAtivacao.objects.create(
         + "\n".join(flattened_log_details)  # Usa a lista achatada
     )
 )  
+
+#######################################################################################################################################
+def criarlog(a,request,log_details):
+    LogFuncao.objects.create(
+        user=request.user,
+        action=a,
+        details=(
+            f"IP: {request.META.get('REMOTE_ADDR')}\n"
+            +"\n".join(log_details)  # Usa a lista achatada
+        )
+    ) 
+
+criarlog(action, request, result_calls)
