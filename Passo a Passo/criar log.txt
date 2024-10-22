@@ -1,0 +1,45 @@
+no app
+#######################################################################################################################################
+models.py
+## Classe para o app
+class Ativacao(models.Model):
+    # Exemplo de um modelo no seu app
+    nome = models.CharField(max_length=100)
+
+  #Claase como deseja que fique no Admin
+class LogAtivacao(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # O usuário que fez a ação
+    action = models.CharField(max_length=255)  # A descrição da ação
+    timestamp = models.DateTimeField(auto_now_add=True)  # Data e hora do log
+    details = models.TextField(blank=True)  # Detalhes adicionais, se houver
+
+    def __str__(self):
+        return f"{self.user} - {self.action} - {self.timestamp}"
+#######################################################################################################################################
+admin.py
+
+from django.contrib import admin
+from .models import LogAtivacao
+
+@admin.register(LogAtivacao)
+class CustomLogAdmin(admin.ModelAdmin):
+    list_display = ('user', 'action', 'timestamp', 'details')
+    list_filter = ('user', 'timestamp')
+#######################################################################################################################################
+views.py
+            
+from .models import LogAtivacao         
+
+log_details = []
+log_details.append(resul_sip)
+
+flattened_log_details = [item for sublist in log_details for item in sublist]
+
+LogAtivacao.objects.create(
+    user=request.user,
+    action=f"(DDR {first_name})",
+    details=(
+        f"IP: {request.META.get('REMOTE_ADDR')}\n"
+        + "\n".join(flattened_log_details)  # Usa a lista achatada
+    )
+)  
